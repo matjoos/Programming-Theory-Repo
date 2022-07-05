@@ -6,10 +6,12 @@ public class PlayerController : MonoBehaviour
 {
     MainUIManager mainUIManager;
     Renderer playerRenderer;
+    Rigidbody playerRigidBody;
 
-    float speed = 10.0f;
+    float speed = 8.0f;
     float xRange = 7.7f;
-    float zRange = 3.7f;
+    float zLowerBound = -3.7f;
+    float zUpperBound = 4.7f;
 
     IceBreaker fracter;
     IceBreaker codeBreaker;
@@ -29,25 +31,32 @@ public class PlayerController : MonoBehaviour
     {
         mainUIManager = GameObject.Find("MainUIManager").GetComponent<MainUIManager>();
         playerRenderer = gameObject.GetComponent<Renderer>();
+        playerRigidBody = gameObject.GetComponent<Rigidbody>();
 
         InitializeDeck();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         Vector3 direction = new Vector3(input.x, 0, input.y);
-        Vector3 newPosition = transform.position + (direction * speed * Time.deltaTime);
+        
+        playerRigidBody.AddForce(direction.normalized * speed);
 
         // Keep player inside the boundaries
-        if (newPosition.x < -xRange) { newPosition.x = -xRange; }
-        if (newPosition.x > xRange) { newPosition.x = xRange; }
+        Vector3 position = transform.position;
 
-        if (newPosition.z < -zRange) { newPosition.z = -zRange; }
-        if (newPosition.z > zRange) { newPosition.z = zRange; }
+        if (position.x < -xRange) { position.x = -xRange; }
+        if (position.x > xRange) { position.x = xRange; }
 
-        transform.position = newPosition;
+        if (position.z < zLowerBound) { position.z = zLowerBound; }
+        if (position.z > zUpperBound) { position.z = zUpperBound; }
 
+        transform.position = position;
+    }
+
+    void Update()
+    { 
         // Switch to next icebreaker on fire button or spacebar
         if (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Space))
         {

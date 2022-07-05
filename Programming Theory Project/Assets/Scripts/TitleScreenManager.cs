@@ -18,7 +18,7 @@ public class TitleScreenManager : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            SceneManager.LoadScene("main");
+            SceneManager.LoadSceneAsync("main");
         }
     }
 
@@ -30,6 +30,6 @@ public class TitleScreenManager : MonoBehaviour
 
     void ShowHighscoreScreen()
     {
-        SceneManager.LoadScene("highscore");
+        SceneManager.LoadSceneAsync("highscore");
     }
 }

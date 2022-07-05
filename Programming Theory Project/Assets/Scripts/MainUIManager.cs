@@ -17,7 +17,7 @@ public class MainUIManager : MonoBehaviour
 
     public void UpdateIceBreakerText(string name, int strength, Color color)
     {
-        iceBreakerText.text = name + "(" + strength + ")";
+        iceBreakerText.text = name + " (lvl. " + strength + ")";
         iceBreakerText.color = color;
     }
 

@@ -32,6 +32,6 @@ public class HighscoreScreenManager : MonoBehaviour
 
     void ReturnToTitleScreen()
     {
-        SceneManager.LoadScene("titlescreen");
+        SceneManager.LoadSceneAsync("titlescreen");
     }
 }
