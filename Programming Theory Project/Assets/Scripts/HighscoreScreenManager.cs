@@ -7,9 +7,9 @@ public class HighscoreScreenManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI[] nameTable = new TextMeshProUGUI[5];
     [SerializeField] private TextMeshProUGUI[] scoreTable = new TextMeshProUGUI[5];
 
-    readonly float returnToTitleTime = 5.0f; //seconds
+    private readonly float returnToTitleTime = 5.0f; //seconds
 
-    void Start()
+    private void Start()
     {
         // Print highscores
         for (int i = 0; i < nameTable.Length; i++)
@@ -22,7 +22,7 @@ public class HighscoreScreenManager : MonoBehaviour
         Invoke("ReturnToTitleScreen", returnToTitleTime);
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.anyKeyDown)
         {
@@ -30,7 +30,7 @@ public class HighscoreScreenManager : MonoBehaviour
         }
     }
 
-    void ReturnToTitleScreen()
+    private void ReturnToTitleScreen()
     {
         SceneManager.LoadSceneAsync("titlescreen");
     }

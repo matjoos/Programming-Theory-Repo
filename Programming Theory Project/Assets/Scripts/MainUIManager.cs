@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class MainUIManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI scoreText;
-    [SerializeField] TextMeshProUGUI iceBreakerText;
-    [SerializeField] TextMeshProUGUI creditsText;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI iceBreakerText;
+    [SerializeField] private TextMeshProUGUI creditsText;
 
+    private PlayerController playerController;
 
-    public void UpdateScore(int score)
+    private void Start()
     {
-        scoreText.text = "Score: " + score;
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+    }
+
+    public void UpdateScore()
+    {
+        scoreText.text = "Score: " + playerController.score;
     }
 
     public void UpdateIceBreakerText(string name, int strength, Color color)
@@ -21,9 +25,8 @@ public class MainUIManager : MonoBehaviour
         iceBreakerText.color = color;
     }
 
-    public void UpdateCredits(int credits)
+    public void UpdateCredits()
     {
-        creditsText.text = "Credits: " + credits;
+        creditsText.text = "Credits: " + playerController.credits;
     }
-
 }

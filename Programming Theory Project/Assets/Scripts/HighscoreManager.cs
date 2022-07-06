@@ -22,7 +22,7 @@ public class HighscoreManager : MonoBehaviour
         public Highscore[] highscores;
     }
 
-    void Awake()
+    private void Awake()
     {
         if (instance == null)
         {

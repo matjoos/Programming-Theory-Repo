@@ -3,18 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenManager : MonoBehaviour
 {
-    [SerializeField] GameObject cursor;
-    bool isCursorActive = false;
-    readonly float cursorBlinkTime = 0.5f; //seconds
-    readonly float showHighscoreTime = 10.0f; //seconds
+    [SerializeField] private GameObject cursor;
+    private bool isCursorActive = false;
+    private readonly float cursorBlinkTime = 0.5f; //seconds
+    private readonly float showHighscoreTime = 10.0f; //seconds
 
-    void Start()
+    private void Start()
     {
         InvokeRepeating("BlinkCursor", cursorBlinkTime, cursorBlinkTime);
         Invoke("ShowHighscoreScreen", showHighscoreTime);
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.anyKeyDown)
         {
@@ -22,13 +22,13 @@ public class TitleScreenManager : MonoBehaviour
         }
     }
 
-    void BlinkCursor()
+    private void BlinkCursor()
     {
         cursor.SetActive(isCursorActive);
         isCursorActive = !isCursorActive;
     }
 
-    void ShowHighscoreScreen()
+    private void ShowHighscoreScreen()
     {
         SceneManager.LoadSceneAsync("highscore");
     }

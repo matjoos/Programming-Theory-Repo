@@ -351,11 +351,16 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
+"Assets/Scripts/Barrier.cs"
+"Assets/Scripts/CodeGate.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/HighscoreManager.cs"
 "Assets/Scripts/HighscoreScreenManager.cs"
+"Assets/Scripts/Ice.cs"
 "Assets/Scripts/MainUIManager.cs"
 "Assets/Scripts/PlayerController.cs"
+"Assets/Scripts/Sentry.cs"
+"Assets/Scripts/SpawnManager.cs"
 "Assets/Scripts/TitleScreenManager.cs"
 -langversion:9.0
 
