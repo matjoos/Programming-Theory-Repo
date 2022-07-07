@@ -19,10 +19,8 @@ public class Sentry : Ice
     public override void WinsInterface()
     {
         // When a sentry wins an interface, the player is destroyed
-        Destroy(playerController.gameObject);
-
-        // Add particle effect
-        // Implement game over
+        playerController.Explodes();
+        GameManager.Instance.GameOver();
     }
 
     private void MoveSquarePattern()

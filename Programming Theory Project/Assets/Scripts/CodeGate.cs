@@ -14,6 +14,15 @@ public class CodeGate : Ice
     public override void WinsInterface()
     {
         // When a code gate wins an interface, reduce credits to 0
-        playerController.credits = 0;
+        // If credits already 0, destroy player
+        if (playerController.credits == 0)
+        {
+            playerController.Explodes();
+            GameManager.Instance.GameOver();
+        }
+        else
+        {
+            playerController.credits = 0;
+        }
     }
 }

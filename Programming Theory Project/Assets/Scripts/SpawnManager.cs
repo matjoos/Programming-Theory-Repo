@@ -36,6 +36,8 @@ public class SpawnManager : MonoBehaviour
         {
             credit.SetActive(true);
         }
+
+        // All credits reactivated, clear list
         GameManager.Instance.deactivatedPickups = new List<GameObject>();
 
         isSpawning = false;

@@ -39,9 +39,26 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.gameOver)
+        {
+            MovePlayer();
+        }
+    }
+
+    private void Update()
+    { 
+        // Switch to next icebreaker on fire button or spacebar
+        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Space))
+        {
+            SwitchIceBreaker();
+        }
+    }
+
+    private void MovePlayer()
+    {
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         Vector3 direction = new Vector3(input.x, 0, input.y);
-        
+
         playerRigidBody.AddForce(direction.normalized * speed);
 
         // Keep player inside the boundaries
@@ -54,15 +71,6 @@ public class PlayerController : MonoBehaviour
         else if (position.z > zUpperBound) { position.z = zUpperBound; }
 
         transform.position = position;
-    }
-
-    private void Update()
-    { 
-        // Switch to next icebreaker on fire button or spacebar
-        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Space))
-        {
-            SwitchIceBreaker();
-        }
     }
 
     private void SwitchIceBreaker()
@@ -110,50 +118,68 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Credit"))
         {
-            // Store a reference to the credit in game manager for reactivation
-            GameObject credit = other.gameObject;
-            GameManager.Instance.deactivatedPickups.Add(credit);
-            credit.SetActive(false);
-
-            credits++;
-            mainUIManager.UpdateCredits();
-            // Make a sound credit++
-        }
-        else if (other.CompareTag("Goal"))
-        {
-            // Remove all credits for testing
-            // credits = 0;
-
-            mainUIManager.UpdateCredits();
-            mainUIManager.UpdateScore();
-
-            // Implement interface cost for goal
-
-            // Make a sound not enough credits for interface cost
-
-            // Score points for goal
-            // Make a sound success!!
-            // Effect
-            // End scene
+            CollideWithCredit(other.gameObject);
         }
         else if (other.CompareTag("Ice"))
         {
-            InterfaceWithIce(other.gameObject.GetComponent<Ice>());
+            CollideWithIce(other.gameObject);
+        }
+        else if (other.CompareTag("Goal"))
+        {
+            CollideWithGoal(other.gameObject);
+        }
+    }
 
+    private void CollideWithCredit(GameObject credit)
+    {
+        // Store a reference to the credit in game manager for reactivation
+        GameManager.Instance.deactivatedPickups.Add(credit);
+
+        credit.SetActive(false);
+        credits++;
+        mainUIManager.UpdateCredits();
+        // Make a sound credit++
+    }
+
+    private void CollideWithIce(GameObject ice)
+    {
+        InterfaceWithIce(ice.GetComponent<Ice>());
+
+        mainUIManager.UpdateCredits();
+        mainUIManager.UpdateScore();
+
+        // Update UI with icebreaker level
+        // Nothing happens if no icebreaker is selected
+        if (currentIceBreaker < 0 || currentIceBreaker > 2)
+        {
+            return;
+        }
+
+        IceBreaker iceBreaker = deck[currentIceBreaker];
+        mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);
+    }
+
+    private void CollideWithGoal(GameObject goal)
+    {
+        int interfaceCost = goal.GetComponent<Goal>().InterfaceCost;
+        int points = goal.GetComponent<Goal>().PointsValue;
+
+        if (credits < interfaceCost)
+        {
+            // Not enough credits for goal
+            // Make a sound not enough credits
+            return;
+        }
+        else
+        {
+            // Level cleared
+            credits -= interfaceCost;
+            score += points;
             mainUIManager.UpdateCredits();
             mainUIManager.UpdateScore();
-
-            //Make a sound
-
-            // Update UI with icebreaker level
-            // Nothing happens if no icebreaker is selected
-            if (currentIceBreaker < 0 || currentIceBreaker > 2)
-            {
-                return;
-            }
-
-            IceBreaker iceBreaker = deck[currentIceBreaker];
-            mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);            
+            // Make a sound level cleared
+            // Special effect
+            // Wait and end scene
         }
     }
 
@@ -229,6 +255,13 @@ public class PlayerController : MonoBehaviour
     {
         Destroy(ice.gameObject);
         score += ice.PointsValue;
-        // Make sound
+        // Make a sound ice destroyed
+    }
+
+    public void Explodes()
+    {
+        Destroy(gameObject);
+        // Add particle effect
+        // Make an explosion sound
     }
 }
