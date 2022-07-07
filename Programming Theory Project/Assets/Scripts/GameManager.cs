@@ -14,11 +14,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject pauseTextObject;
     [SerializeField] private GameObject gameOverTextObject;
+    [SerializeField] private GameObject thankYouTextObject;
 
     private int pauseTimeScale = 0;
     public bool gameOver = false;
     private bool gameOverDone = false;
-    private float gameOverTime = 2.0f; //seconds
+    private float gameOverTime = 3.0f; //seconds
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour
 
         if (gameOver && gameOverDone && Input.anyKeyDown)
         {
-            CheckForHighscore();
+            CheckForHighscoreAndChangeScene();
         }
     }
 
@@ -48,8 +49,15 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        // Stop background music
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
+
+        // Persist score beyond scene
+        HighscoreManager.instance.currentScore = playerController.score;
+
         gameOver = true;
         gameOverTextObject.SetActive(true);
+
         StartCoroutine(WaitForGameOverDone());
     }
 
@@ -59,7 +67,7 @@ public class GameManager : MonoBehaviour
         gameOverDone = true;
     }
 
-    private void CheckForHighscore()
+    private void CheckForHighscoreAndChangeScene()
     {
         // The player made the list if the score is higher
         // than the lowest one on the list.
@@ -70,12 +78,17 @@ public class GameManager : MonoBehaviour
 
         if (playerController.score > lowestHighscore)
         {
-            // Made the list, enter name
-            Debug.Log("Made the list, enter name");
+            SceneManager.LoadSceneAsync("entername");
         }
         else
         {
             SceneManager.LoadSceneAsync("highscore");
         }      
+    }
+
+    public void PlayerFinishedGame()
+    {
+        thankYouTextObject.SetActive(true);
+        GameOver();
     }
 }

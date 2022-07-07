@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class EnterNameScreenManager : MonoBehaviour
@@ -12,4 +13,17 @@ public class EnterNameScreenManager : MonoBehaviour
         inputField.Select();
         inputField.ActivateInputField();
     }
+
+    public void OnEndEdit(string name)
+    {
+        HighscoreManager.instance.playerName = name;
+
+        HighscoreManager.instance.AddScoreToHighscoreTable();
+
+        HighscoreManager.instance.SaveHighscore();
+  
+        SceneManager.LoadScene("highscore");
+    }
+
+    
 }

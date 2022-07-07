@@ -1,7 +1,11 @@
 using UnityEngine;
 
 public class CodeGate : Ice
-{ 
+{
+    [SerializeField] private ParticleSystem explosionParticle;
+    [SerializeField] private AudioClip codeGateWinsSound;
+    [SerializeField] private AudioClip codeGateDefeatedSound;
+    
     protected override void Start()
     {
         base.Start();
@@ -14,15 +18,19 @@ public class CodeGate : Ice
     public override void WinsInterface()
     {
         // When a code gate wins an interface, reduce credits to 0
-        // If credits already 0, destroy player
-        if (playerController.credits == 0)
+        playerController.credits = 0;
+
+        iceAudio.PlayOneShot(codeGateWinsSound, 1.0f);
+    }
+
+    public override void LosesInterface()
+    {
+        explosionParticle.Play();
+        iceAudio.PlayOneShot(codeGateDefeatedSound, 1.0f);
+        GetComponent<Renderer>().enabled = false;
+        foreach (Collider collider in GetComponents<Collider>())
         {
-            playerController.Explodes();
-            GameManager.Instance.GameOver();
-        }
-        else
-        {
-            playerController.credits = 0;
+            collider.enabled = false;
         }
     }
 }

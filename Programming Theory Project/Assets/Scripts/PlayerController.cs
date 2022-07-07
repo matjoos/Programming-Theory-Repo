@@ -6,6 +6,14 @@ public class PlayerController : MonoBehaviour
     private Renderer playerRenderer;
     private Rigidbody playerRigidBody;
 
+    [SerializeField] private ParticleSystem explosionParticle;
+
+    private AudioSource playerAudio;
+    [SerializeField] private AudioClip explodeSound;
+    [SerializeField] private AudioClip creditSound;
+    [SerializeField] private AudioClip switchBreakerSound;
+    [SerializeField] private AudioClip notEnoughCreditsSound;
+  
     public int credits;
     public int score;
 
@@ -33,6 +41,8 @@ public class PlayerController : MonoBehaviour
         mainUIManager = GameObject.Find("MainUIManager").GetComponent<MainUIManager>();
         playerRenderer = gameObject.GetComponent<Renderer>();
         playerRigidBody = gameObject.GetComponent<Rigidbody>();
+
+        playerAudio = GetComponent<AudioSource>();
 
         InitializeDeck();
     }
@@ -81,6 +91,8 @@ public class PlayerController : MonoBehaviour
 
         playerRenderer.material.SetColor("_Color", iceBreaker.Color);
         mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);
+
+        playerAudio.PlayOneShot(switchBreakerSound, 1.0f);
     }
 
     private void InitializeDeck()
@@ -122,11 +134,11 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.CompareTag("Ice"))
         {
-            CollideWithIce(other.gameObject);
+            CollideWithIce(other.gameObject.GetComponent<Ice>());
         }
         else if (other.CompareTag("Goal"))
         {
-            CollideWithGoal(other.gameObject);
+            CollideWithGoal(other.gameObject.GetComponent<Goal>());
         }
     }
 
@@ -138,12 +150,12 @@ public class PlayerController : MonoBehaviour
         credit.SetActive(false);
         credits++;
         mainUIManager.UpdateCredits();
-        // Make a sound credit++
+        playerAudio.PlayOneShot(creditSound, 1.0f);
     }
 
-    private void CollideWithIce(GameObject ice)
+    private void CollideWithIce(Ice ice)
     {
-        InterfaceWithIce(ice.GetComponent<Ice>());
+        InterfaceWithIce(ice);
 
         mainUIManager.UpdateCredits();
         mainUIManager.UpdateScore();
@@ -159,27 +171,24 @@ public class PlayerController : MonoBehaviour
         mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);
     }
 
-    private void CollideWithGoal(GameObject goal)
-    {
-        int interfaceCost = goal.GetComponent<Goal>().InterfaceCost;
-        int points = goal.GetComponent<Goal>().PointsValue;
-
-        if (credits < interfaceCost)
+    private void CollideWithGoal(Goal goal)
+    {    
+        if (credits < goal.InterfaceCost)
         {
-            // Not enough credits for goal
-            // Make a sound not enough credits
+            goal.NotDefeated();
             return;
         }
         else
         {
             // Level cleared
-            credits -= interfaceCost;
-            score += points;
+            credits -= goal.InterfaceCost;
+            score += goal.PointsValue;
             mainUIManager.UpdateCredits();
             mainUIManager.UpdateScore();
-            // Make a sound level cleared
-            // Special effect
-            // Wait and end scene
+
+            goal.Explode();
+
+            GameManager.Instance.PlayerFinishedGame();
         }
     }
 
@@ -237,7 +246,8 @@ public class PlayerController : MonoBehaviour
             deck[currentIceBreaker].Strength++;
         }
 
-        // While-loop passed: icebreaker strength is at ice strength level. 
+        // While-loop passed: icebreaker strength is at ice strength level
+        // and/or credits = 0. 
         // If the player has credits left over to pay the interface cost,
         // the player pays the cost and wins the interface.
         if (credits >= deck[currentIceBreaker].InterfaceCost)
@@ -253,15 +263,14 @@ public class PlayerController : MonoBehaviour
 
     private void WinsInterface(Ice ice)
     {
-        Destroy(ice.gameObject);
+        ice.LosesInterface();
         score += ice.PointsValue;
-        // Make a sound ice destroyed
     }
 
     public void Explodes()
     {
-        Destroy(gameObject);
-        // Add particle effect
-        // Make an explosion sound
+        explosionParticle.Play();
+        playerAudio.PlayOneShot(explodeSound, 1.0f);
+        playerRenderer.enabled = false;
     }
 }
