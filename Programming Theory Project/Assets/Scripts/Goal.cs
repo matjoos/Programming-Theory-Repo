@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
+    // ENCAPSULATION
     public int InterfaceCost { get; private set; }
     public int PointsValue { get; private set; }
 

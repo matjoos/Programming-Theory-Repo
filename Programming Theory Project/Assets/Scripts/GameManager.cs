@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,11 +30,13 @@ public class GameManager : MonoBehaviour
     {
         if (!gameOver && Input.GetKeyDown(KeyCode.P))
         {
+            // ABSTRACTION
             PauseOrUnpauseGame();
         }
 
         if (gameOver && gameOverDone && Input.anyKeyDown)
         {
+            // ABSTRACTION
             CheckForHighscoreAndChangeScene();
         }
     }

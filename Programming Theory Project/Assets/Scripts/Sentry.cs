@@ -1,10 +1,18 @@
 using UnityEngine;
 
+// INHERITANCE
 public class Sentry : Ice
 {
     [SerializeField] private ParticleSystem explosionParticle;
     [SerializeField] private AudioClip sentryDefeatedSound;
 
+    private Vector3 currentDirection = Vector3.forward;
+    private float zTopBound = 3.5f;
+    private float zLowerBound = -2.5f;
+    private float xRange = 4.5f;
+    private float sentrySpeed = 1.0f;
+
+    // POLYMORPHISM
     protected override void Start()
     {
         base.Start();
@@ -16,9 +24,29 @@ public class Sentry : Ice
 
     private void Update()
     {
-        MoveSquarePattern();
+        // The sentry moves in a square pattern,
+        // changing direction when reaching boundaries
+        if (currentDirection == Vector3.forward && transform.position.z >= zTopBound)
+        {
+            currentDirection = Vector3.left;
+        }
+        else if (currentDirection == Vector3.left && transform.position.x <= -xRange)
+        {
+            currentDirection = Vector3.back;
+        }
+        else if (currentDirection == Vector3.back && transform.position.z <= zLowerBound)
+        {
+            currentDirection = Vector3.right;
+        }
+        else if (currentDirection == Vector3.right && transform.position.x >= xRange)
+        {
+            currentDirection = Vector3.forward;
+        }
+
+        transform.position += currentDirection * Time.deltaTime * sentrySpeed;
     }
 
+    // POLYMORPHISM
     public override void WinsInterface()
     {
         // When a sentry wins an interface, the player is destroyed
@@ -26,6 +54,7 @@ public class Sentry : Ice
         GameManager.Instance.GameOver();
     }
 
+    // POLYMORPHISM
     public override void LosesInterface()
     {
         explosionParticle.Play();
@@ -39,10 +68,5 @@ public class Sentry : Ice
         {
             collider.enabled = false;
         } 
-    }
-
-    private void MoveSquarePattern()
-    {
-
     }
 }

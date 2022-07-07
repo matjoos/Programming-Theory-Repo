@@ -39,7 +39,8 @@ public class HighscoreManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
 
-            //Load highscores
+            // Load highscores
+            // ABSTRACTION
             LoadHighscore();
         }
     }

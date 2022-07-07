@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
 
     public class IceBreaker
     {
+        // ENCAPSULATION
         public string Name { get; set; }
         public int Strength { get; set; }
         public int InterfaceCost { get; set; }
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
         playerAudio = GetComponent<AudioSource>();
 
+        // ABSTRACTION
         InitializeDeck();
     }
 
@@ -51,6 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.Instance.gameOver)
         {
+            // ABSTRACTION
             MovePlayer();
         }
     }
@@ -60,7 +63,11 @@ public class PlayerController : MonoBehaviour
         // Switch to next icebreaker on fire button or spacebar
         if (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Space))
         {
-            SwitchIceBreaker();
+            if (!GameManager.Instance.gameOver)
+            {
+                // ABSTRACTION
+                SwitchIceBreaker();
+            }  
         }
     }
 

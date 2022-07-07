@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -18,8 +16,10 @@ public class EnterNameScreenManager : MonoBehaviour
     {
         HighscoreManager.instance.playerName = name;
 
+        // ABSTRACTION
         HighscoreManager.instance.AddScoreToHighscoreTable();
 
+        // ABSTRACTION
         HighscoreManager.instance.SaveHighscore();
   
         SceneManager.LoadScene("highscore");
