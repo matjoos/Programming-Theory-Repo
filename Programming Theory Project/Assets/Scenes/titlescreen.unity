@@ -735,6 +735,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highscores: []
   playerName: 
+  currentScore: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
 --- !u!1 &1643720933
 GameObject:
   m_ObjectHideFlags: 0

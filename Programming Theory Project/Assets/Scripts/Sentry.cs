@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// INHERITANCE
 public class Sentry : Ice
 {
     [SerializeField] private ParticleSystem explosionParticle;
@@ -12,7 +11,6 @@ public class Sentry : Ice
     private float xRange = 4.5f;
     private float sentrySpeed = 1.0f;
 
-    // POLYMORPHISM
     protected override void Start()
     {
         base.Start();
@@ -46,24 +44,20 @@ public class Sentry : Ice
         transform.position += currentDirection * Time.deltaTime * sentrySpeed;
     }
 
-    // POLYMORPHISM
     public override void WinsInterface()
     {
         // When a sentry wins an interface, the player is destroyed
-        playerController.Explodes();
+        //playerController.Explodes(); // TODO Replace with raising an event 
         GameManager.Instance.GameOver();
     }
 
-    // POLYMORPHISM
     public override void LosesInterface()
     {
         explosionParticle.Play();
         iceAudio.PlayOneShot(sentryDefeatedSound, 1.0f);
 
-        // Switch off the renderer and all colliders.
-        // This way the game object still exists (explosion can continue),
-        // but doesn't do anything
         GetComponent<Renderer>().enabled = false;
+
         foreach (Collider collider in GetComponents<Collider>())
         {
             collider.enabled = false;

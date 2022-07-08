@@ -115,6 +115,7 @@ MonoBehaviour:
   explosionParticle: {fileID: 0}
   codeGateWinsSound: {fileID: 8300000, guid: 7ec5ecf96d2fd4aae950ead923cf9ca0, type: 3}
   codeGateDefeatedSound: {fileID: 8300000, guid: dc028d92bd81f4023ae9b67676dad909, type: 3}
+  credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
 --- !u!82 &72218386801911189
 AudioSource:
   m_ObjectHideFlags: 0

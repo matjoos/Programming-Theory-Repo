@@ -191,6 +191,8 @@ MonoBehaviour:
   scoreText: {fileID: 655737531}
   iceBreakerText: {fileID: 1513641790}
   creditsText: {fileID: 717006557}
+  credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
+  score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
 --- !u!4 &40685970
 Transform:
   m_ObjectHideFlags: 0
@@ -999,6 +1001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a408efdde0f02462e84530da7b00ec6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
   deactivatedPickups: []
   pauseTextObject: {fileID: 1411256980}
   gameOverTextObject: {fileID: 1768253403}
@@ -1749,6 +1752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9c539d5984b44c3ab1af3b826e804c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
 --- !u!1001 &750801634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4020,8 +4024,8 @@ MonoBehaviour:
   creditSound: {fileID: 8300000, guid: 67357478fa899460198f84822b54cc8d, type: 3}
   switchBreakerSound: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
   notEnoughCreditsSound: {fileID: 8300000, guid: c33b0c5db5b354f099e05fa30b4605e8, type: 3}
-  credits: 0
-  score: 0
+  credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
+  score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
 --- !u!54 &1628261689
 Rigidbody:
   m_ObjectHideFlags: 0

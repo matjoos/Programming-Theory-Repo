@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    private PlayerController playerController;
+    [SerializeField] private IntVariable score;
    
     public List<GameObject> deactivatedPickups;
 
@@ -23,20 +23,17 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     private void Update()
     {
         if (!gameOver && Input.GetKeyDown(KeyCode.P))
         {
-            // ABSTRACTION
             PauseOrUnpauseGame();
         }
 
         if (gameOver && gameOverDone && Input.anyKeyDown)
         {
-            // ABSTRACTION
             CheckForHighscoreAndChangeScene();
         }
     }
@@ -50,21 +47,16 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        // Stop background music
         GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
-
-        // Persist score beyond scene
-        HighscoreManager.instance.currentScore = playerController.score;
 
         gameOver = true;
         gameOverTextObject.SetActive(true);
 
-        StartCoroutine(WaitForGameOverDone());
+        Invoke("WaitForGameOverDone", gameOverTime);
     }
 
-    private IEnumerator WaitForGameOverDone()
+    private void WaitForGameOverDone()
     {
-        yield return new WaitForSeconds(gameOverTime);
         gameOverDone = true;
     }
 
@@ -77,7 +69,7 @@ public class GameManager : MonoBehaviour
         int lowestPosition = highscores.Length - 1;
         int lowestHighscore = highscores[lowestPosition].score;
 
-        if (playerController.score > lowestHighscore)
+        if (score.value > lowestHighscore)
         {
             SceneManager.LoadSceneAsync("entername");
         }

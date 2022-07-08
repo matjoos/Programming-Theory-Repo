@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    // ENCAPSULATION
     public int InterfaceCost { get; private set; }
     public int PointsValue { get; private set; }
 
@@ -24,7 +23,9 @@ public class Goal : MonoBehaviour
     {
         fireworks.Play();
         goalAudio.PlayOneShot(levelClearedSound, 1.0f);
+
         GetComponent<Renderer>().enabled = false;
+
         foreach (Collider collider in GetComponents<Collider>())
         {
             collider.enabled = false;

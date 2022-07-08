@@ -14,12 +14,12 @@ public class EnterNameScreenManager : MonoBehaviour
 
     public void OnEndEdit(string name)
     {
-        HighscoreManager.instance.playerName = name;
+        // TODO replace singleton pattern with SO's and events
 
-        // ABSTRACTION
+        HighscoreManager.instance.playerName = name;
+  
         HighscoreManager.instance.AddScoreToHighscoreTable();
 
-        // ABSTRACTION
         HighscoreManager.instance.SaveHighscore();
   
         SceneManager.LoadScene("highscore");

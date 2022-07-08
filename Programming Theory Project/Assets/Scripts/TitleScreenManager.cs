@@ -5,8 +5,8 @@ public class TitleScreenManager : MonoBehaviour
 {
     [SerializeField] private GameObject cursor;
     private bool isCursorActive = false;
-    private readonly float cursorBlinkTime = 0.5f; //seconds
-    private readonly float showHighscoreTime = 10.0f; //seconds
+    private float cursorBlinkTime = 0.5f; //seconds
+    private float showHighscoreTime = 10.0f; //seconds
 
     private void Start()
     {

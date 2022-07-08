@@ -1,37 +1,28 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    private PlayerController playerController;
-
-    private readonly float creditSpawnDelay = 3.0f; //seconds
+    private float creditSpawnDelay = 3.0f; //seconds
     private bool isSpawning = false;
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-    }
+    [SerializeField] private IntVariable credits;
 
-    // Update is called once per frame
     private void Update()
     {
         //Respawn credits if there are no more in the game
-        GameObject[] credits = GameObject.FindGameObjectsWithTag("Credit");
+        GameObject[] creditsInGame = GameObject.FindGameObjectsWithTag("Credit");
 
-        if (playerController.credits == 0 && credits.Length == 0 && !isSpawning)
+        if (credits.value == 0 && creditsInGame.Length == 0 && !isSpawning)
         {
-            StartCoroutine(WaitAndSpawnCredit(credits));
+            isSpawning = true;
+            Invoke("SpawnCredits", creditSpawnDelay);
         }
     }
 
-    private IEnumerator WaitAndSpawnCredit(GameObject[] credits)
+    private void SpawnCredits()
     {
-        isSpawning = true;
-        yield return new WaitForSeconds(creditSpawnDelay);
-
+        // TODO Replace with scriptable object
         foreach (GameObject credit in GameManager.Instance.deactivatedPickups)
         {
             credit.SetActive(true);

@@ -1,13 +1,11 @@
 using UnityEngine;
 
-// INHERITANCE
 public class Barrier : Ice
 {
     [SerializeField] private ParticleSystem explosionParticle;
     [SerializeField] private AudioClip barrierWinsSound;
     [SerializeField] private AudioClip barrierDefeatedSound;
 
-    // POLYMORPHISM
     protected override void Start()
     {
         base.Start();
@@ -17,7 +15,6 @@ public class Barrier : Ice
         PointsValue = 50;
     }
 
-    // POLYMORPHISM
     public override void WinsInterface()
     {
         // Nothing happens to the player when a barrier wins an interface
@@ -25,12 +22,13 @@ public class Barrier : Ice
         return;
     }
 
-    // POLYMORPHISM
     public override void LosesInterface()
     {
         explosionParticle.Play();
         iceAudio.PlayOneShot(barrierDefeatedSound, 1.0f);
+
         GetComponent<Renderer>().enabled = false;
+
         foreach (Collider collider in GetComponents<Collider>())
         {
             collider.enabled = false;

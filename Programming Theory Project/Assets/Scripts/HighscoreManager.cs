@@ -8,7 +8,8 @@ public class HighscoreManager : MonoBehaviour
     public Highscore[] highscores;
     public string playerName;
     private int numberOfScores = 5;
-    public int currentScore;
+   
+    [SerializeField] private IntVariable currentScore;
 
     [Serializable]
     public class Highscore
@@ -35,12 +36,13 @@ public class HighscoreManager : MonoBehaviour
                 highscores[i] = new Highscore();
             }
 
+            // TODO Replace singleton pattern with SO's and events
+
             // Create persistent singleton
             instance = this;
             DontDestroyOnLoad(gameObject);
 
             // Load highscores
-            // ABSTRACTION
             LoadHighscore();
         }
     }
@@ -75,7 +77,7 @@ public class HighscoreManager : MonoBehaviour
     public void AddScoreToHighscoreTable()
     {
         string localPlayerName = playerName;
-        int localScore = currentScore;
+        int localScore = currentScore.value;
         string playerToBump;
         int scoreToBump;
 

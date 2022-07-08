@@ -7,16 +7,14 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI iceBreakerText;
     [SerializeField] private TextMeshProUGUI creditsText;
 
-    private PlayerController playerController;
+    [SerializeField] private IntVariable credits;
+    [SerializeField] private IntVariable score;
 
-    private void Start()
-    {
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-    }
+    // TODO Replace methods with events, update UI on change
 
     public void UpdateScore()
     {
-        scoreText.text = "Score: " + playerController.score;
+        scoreText.text = "Score: " + score.value;
     }
 
     public void UpdateIceBreakerText(string name, int strength, Color color)
@@ -27,6 +25,6 @@ public class MainUIManager : MonoBehaviour
 
     public void UpdateCredits()
     {
-        creditsText.text = "Credits: " + playerController.credits;
+        creditsText.text = "Credits: " + credits.value;
     }
 }
