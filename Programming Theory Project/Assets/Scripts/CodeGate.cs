@@ -15,6 +15,7 @@ public class CodeGate : Ice
         IceType = "CodeGate";
         Strength = 2;
         PointsValue = 100;
+        DoesDestroyPlayer = false;
     }
 
     public override void WinsInterface()

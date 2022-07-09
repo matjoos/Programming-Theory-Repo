@@ -18,6 +18,7 @@ public class Sentry : Ice
         IceType = "Sentry";
         Strength = 1;
         PointsValue = 200;
+        DoesDestroyPlayer = true;
     }
 
     private void Update()
@@ -46,9 +47,8 @@ public class Sentry : Ice
 
     public override void WinsInterface()
     {
-        // When a sentry wins an interface, the player is destroyed
-        //playerController.Explodes(); // TODO Replace with raising an event 
-        GameManager.Instance.GameOver();
+        // When a sentry wins an interface, the player is destroyed.
+        // The DoesDestroyPlayer bool handles this.
     }
 
     public override void LosesInterface()

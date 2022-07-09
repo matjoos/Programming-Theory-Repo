@@ -10,32 +10,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private ParticleSystem explosionParticle;
 
     private AudioSource playerAudio;
-    [SerializeField] private AudioClip explodeSound;
-    [SerializeField] private AudioClip creditSound;
-    [SerializeField] private AudioClip switchBreakerSound;
-    [SerializeField] private AudioClip notEnoughCreditsSound;
+    [SerializeField] private AudioClip creditSound, notEnoughCreditsSound;
+    [SerializeField] private AudioClip explodeSound, switchBreakerSound;
 
-    [SerializeField] private IntVariable credits;
-    [SerializeField] private IntVariable score;
+    [SerializeField] private IntVariable credits, score;
+    [SerializeField] private GameObjectListVariable deactivatedCredits;
+
+    [SerializeField] private IceBreaker fracter, codeBreaker, killer;
 
     private float speed = 8.0f;
     private float xRange = 7.7f;
     private float zLowerBound = -3.7f;
     private float zUpperBound = 4.7f;
 
-    private IceBreaker fracter;
-    private IceBreaker codeBreaker;
-    private IceBreaker killer;
     private IceBreaker[] deck = new IceBreaker[3];
     private int currentIceBreaker = -1;
-
-    public class IceBreaker // TODO Make IceBreaker a scriptable object?
-    {
-        public string Name { get; set; }
-        public int Strength { get; set; }
-        public int InterfaceCost { get; set; }
-        public Color Color { get; set; }
-    }
 
     private void Start()
     {
@@ -45,7 +34,9 @@ public class PlayerController : MonoBehaviour
 
         playerAudio = GetComponent<AudioSource>();
 
-        InitializeDeck();
+        deck[0] = fracter;
+        deck[1] = codeBreaker;
+        deck[2] = killer;
     }
 
     private void FixedUpdate()
@@ -93,43 +84,12 @@ public class PlayerController : MonoBehaviour
 
         IceBreaker iceBreaker = deck[currentIceBreaker];
 
-        playerRenderer.material.SetColor("_Color", iceBreaker.Color);
+        playerRenderer.material.SetColor("_Color", iceBreaker.color);
 
         // TODO SO as channel for UI
-        mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);
+        mainUIManager.UpdateIceBreakerText(iceBreaker.name, iceBreaker.strength, iceBreaker.color);
 
         playerAudio.PlayOneShot(switchBreakerSound, 1.0f);
-    }
-
-    private void InitializeDeck()
-    {
-        fracter = new IceBreaker
-        {
-            Name = "Fracter",
-            Strength = 0,
-            InterfaceCost = 1,
-            Color = Color.magenta
-        };
-
-        codeBreaker = new IceBreaker
-        {
-            Name = "CodeBreaker",
-            Strength = 0,
-            InterfaceCost = 1,
-            Color = Color.yellow
-        };
-
-        killer = new IceBreaker
-        {
-            Name = "Killer",
-            Strength = 0,
-            InterfaceCost = 1,
-            Color = Color.cyan
-        };
-
-        deck[0] = fracter;
-        deck[1] = codeBreaker;
-        deck[2] = killer;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -150,8 +110,8 @@ public class PlayerController : MonoBehaviour
 
     private void CollideWithCredit(GameObject credit)
     {
-        // Store a reference to the credit in game manager for reactivation
-        GameManager.Instance.deactivatedPickups.Add(credit);
+        // Store a reference to the credit for reactivation
+        deactivatedCredits.value.Add(credit);
 
         credit.SetActive(false);
         credits.value++;
@@ -166,6 +126,7 @@ public class PlayerController : MonoBehaviour
     {
         InterfaceWithIce(ice);
 
+        // TODO Have UI monitor value changes
         mainUIManager.UpdateCredits();
         mainUIManager.UpdateScore();
 
@@ -179,7 +140,7 @@ public class PlayerController : MonoBehaviour
         }
 
         IceBreaker iceBreaker = deck[currentIceBreaker];
-        mainUIManager.UpdateIceBreakerText(iceBreaker.Name, iceBreaker.Strength, iceBreaker.Color);
+        mainUIManager.UpdateIceBreakerText(iceBreaker.name, iceBreaker.strength, iceBreaker.color);
     }
 
     private void CollideWithGoal(Goal goal)
@@ -212,42 +173,43 @@ public class PlayerController : MonoBehaviour
         // TODO Abstraction
         if (currentIceBreaker < 0 || currentIceBreaker > 2)
         {
-            ice.WinsInterface();
+            IceWinsInterface(ice);
             return;
         }
 
         switch (ice.IceType)
         {
             case "Barrier":
-                if (deck[currentIceBreaker].Name == "Fracter")
+                if (deck[currentIceBreaker].name == "Fracter")
                 {
                     MatchedInterface(ice);
                 }
                 else
                 {
-                    ice.WinsInterface();
+                    IceWinsInterface(ice);
+                    
                 }
                 break;
 
             case "CodeGate":
-                if (deck[currentIceBreaker].Name == "CodeBreaker")
+                if (deck[currentIceBreaker].name == "CodeBreaker")
                 {
                     MatchedInterface(ice);
                 }
                 else
                 {
-                    ice.WinsInterface();
+                    IceWinsInterface(ice);
                 }
                 break;
 
             case "Sentry":
-                if (deck[currentIceBreaker].Name == "Killer")
+                if (deck[currentIceBreaker].name == "Killer")
                 {
                     MatchedInterface(ice);
                 }
                 else
                 {
-                    ice.WinsInterface();
+                    IceWinsInterface(ice);
                 }
                 break;         
         }
@@ -255,38 +217,46 @@ public class PlayerController : MonoBehaviour
 
     private void MatchedInterface(Ice ice)
     {
-        while (deck[currentIceBreaker].Strength < ice.Strength && credits.value != 0)
+        while (deck[currentIceBreaker].strength < ice.Strength && credits.value != 0)
         {
             credits.value--;
-            deck[currentIceBreaker].Strength++;
+            deck[currentIceBreaker].strength++;
         }
 
         // While-loop passed: icebreaker strength is at ice strength level
         // and/or credits = 0. 
         // If the player has credits left over to pay the interface cost,
         // the player pays the cost and wins the interface.
-        if (credits.value >= deck[currentIceBreaker].InterfaceCost)
+        if (credits.value >= deck[currentIceBreaker].interfaceCost)
         {
-            credits.value -= deck[currentIceBreaker].InterfaceCost;
-            this.WinsInterface(ice);
+            credits.value -= deck[currentIceBreaker].interfaceCost;
+            PlayerWinsInterface(ice);
         }
         else
         {
-            ice.WinsInterface();
+            IceWinsInterface(ice);
         }
     }
 
-    private void WinsInterface(Ice ice)
+    private void IceWinsInterface(Ice ice)
+    {
+        ice.WinsInterface();
+        if (ice.DoesDestroyPlayer) { this.Explodes(); }
+    }
+
+    private void PlayerWinsInterface(Ice ice)
     {
         ice.LosesInterface();
         score.value += ice.PointsValue;
     }
 
-    // TODO Who calls this method? Sentry? Replace with explode on event.
     public void Explodes()
     {
         explosionParticle.Play();
         playerAudio.PlayOneShot(explodeSound, 1.0f);
         playerRenderer.enabled = false;
+
+        // TODO Replace with event or SO bool
+        GameManager.Instance.GameOver();
     }
 }

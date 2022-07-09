@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -7,6 +6,7 @@ public class SpawnManager : MonoBehaviour
     private bool isSpawning = false;
 
     [SerializeField] private IntVariable credits;
+    [SerializeField] private GameObjectListVariable deactivatedCredits;
 
     private void Update()
     {
@@ -15,21 +15,20 @@ public class SpawnManager : MonoBehaviour
 
         if (credits.value == 0 && creditsInGame.Length == 0 && !isSpawning)
         {
-            isSpawning = true;
+            isSpawning = true; 
             Invoke("SpawnCredits", creditSpawnDelay);
         }
     }
 
     private void SpawnCredits()
     {
-        // TODO Replace with scriptable object
-        foreach (GameObject credit in GameManager.Instance.deactivatedPickups)
+        foreach (GameObject credit in deactivatedCredits.value)
         {
             credit.SetActive(true);
         }
 
         // All credits reactivated, clear list
-        GameManager.Instance.deactivatedPickups = new List<GameObject>();
+        deactivatedCredits.value.Clear();
 
         isSpawning = false;
     }

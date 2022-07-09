@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,15 +7,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private IntVariable score;
    
-    public List<GameObject> deactivatedPickups;
-
     [SerializeField] private GameObject pauseTextObject;
     [SerializeField] private GameObject gameOverTextObject;
     [SerializeField] private GameObject thankYouTextObject;
 
     private int pauseTimeScale = 0;
     public bool gameOver = false;
-    private bool gameOverDone = false;
+    private bool gameOverAnimationsDone = false;
     private float gameOverTime = 3.0f; //seconds
 
     private void Start()
@@ -32,7 +28,7 @@ public class GameManager : MonoBehaviour
             PauseOrUnpauseGame();
         }
 
-        if (gameOver && gameOverDone && Input.anyKeyDown)
+        if (gameOverAnimationsDone && Input.anyKeyDown)
         {
             CheckForHighscoreAndChangeScene();
         }
@@ -57,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     private void WaitForGameOverDone()
     {
-        gameOverDone = true;
+        gameOverAnimationsDone = true;
     }
 
     private void CheckForHighscoreAndChangeScene()

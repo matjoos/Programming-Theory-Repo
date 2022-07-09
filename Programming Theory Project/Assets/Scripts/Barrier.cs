@@ -13,6 +13,7 @@ public class Barrier : Ice
         IceType = "Barrier";
         Strength = 1;
         PointsValue = 50;
+        DoesDestroyPlayer = false;
     }
 
     public override void WinsInterface()

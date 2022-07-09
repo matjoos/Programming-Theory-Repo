@@ -1002,7 +1002,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
-  deactivatedPickups: []
   pauseTextObject: {fileID: 1411256980}
   gameOverTextObject: {fileID: 1768253403}
   thankYouTextObject: {fileID: 1915472458}
@@ -1753,6 +1752,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
+  deactivatedCredits: {fileID: 11400000, guid: ce351de9e3ec54ee387428777a2617de, type: 2}
 --- !u!1001 &750801634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4026,6 +4026,10 @@ MonoBehaviour:
   notEnoughCreditsSound: {fileID: 8300000, guid: c33b0c5db5b354f099e05fa30b4605e8, type: 3}
   credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
   score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
+  deactivatedCredits: {fileID: 11400000, guid: ce351de9e3ec54ee387428777a2617de, type: 2}
+  fracter: {fileID: 11400000, guid: 6d4bd6bc1243848e398779caae3968a9, type: 2}
+  codeBreaker: {fileID: 11400000, guid: 3c54e33326d054251a1910586518e19f, type: 2}
+  killer: {fileID: 11400000, guid: 1f779fd4fbf894cc6bf3c9a2cb6a99c0, type: 2}
 --- !u!54 &1628261689
 Rigidbody:
   m_ObjectHideFlags: 0
