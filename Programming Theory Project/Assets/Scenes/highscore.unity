@@ -1765,6 +1765,7 @@ MonoBehaviour:
   - {fileID: 2013594271}
   - {fileID: 551169554}
   - {fileID: 2021226743}
+  highscores: {fileID: 11400000, guid: 1a28346d9d215400190d451e93e737f3, type: 2}
 --- !u!1 &1401128764
 GameObject:
   m_ObjectHideFlags: 0

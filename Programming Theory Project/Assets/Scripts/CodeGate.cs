@@ -16,6 +16,7 @@ public class CodeGate : Ice
         Strength = 2;
         PointsValue = 100;
         DoesDestroyPlayer = false;
+        DefeatedBy = "CodeBreaker";
     }
 
     public override void WinsInterface()

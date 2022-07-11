@@ -8,6 +8,7 @@ public abstract class Ice : MonoBehaviour
     public int Strength { get; protected set; }
     public int PointsValue { get; protected set; }
     public bool DoesDestroyPlayer { get; protected set; }
+    public string DefeatedBy { get; protected set; }
 
     public abstract void WinsInterface();
 

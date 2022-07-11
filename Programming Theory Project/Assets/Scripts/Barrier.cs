@@ -14,13 +14,13 @@ public class Barrier : Ice
         Strength = 1;
         PointsValue = 50;
         DoesDestroyPlayer = false;
+        DefeatedBy = "Fracter";
     }
 
     public override void WinsInterface()
     {
         // Nothing happens to the player when a barrier wins an interface
         iceAudio.PlayOneShot(barrierWinsSound, 1.0f);
-        return;
     }
 
     public override void LosesInterface()

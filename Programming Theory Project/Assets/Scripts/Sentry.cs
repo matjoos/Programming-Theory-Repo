@@ -19,6 +19,7 @@ public class Sentry : Ice
         Strength = 1;
         PointsValue = 200;
         DoesDestroyPlayer = true;
+        DefeatedBy = "Killer";
     }
 
     private void Update()

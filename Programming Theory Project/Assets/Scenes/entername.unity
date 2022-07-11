@@ -915,6 +915,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputField: {fileID: 113968716}
+  highscores: {fileID: 11400000, guid: 1a28346d9d215400190d451e93e737f3, type: 2}
+  currentScore: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
 --- !u!4 &1607832245
 Transform:
   m_ObjectHideFlags: 0

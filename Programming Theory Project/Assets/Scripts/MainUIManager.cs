@@ -9,22 +9,36 @@ public class MainUIManager : MonoBehaviour
 
     [SerializeField] private IntVariable credits;
     [SerializeField] private IntVariable score;
+    [SerializeField] private IceBreaker selectedIcebreaker;
 
-    // TODO Replace methods with events, update UI on change
 
-    public void UpdateScore()
+    private void OnEnable()
+    {
+        PlayerController.OnScoreChanged.AddListener(UpdateScore);
+        PlayerController.OnCreditsChanged.AddListener(UpdateCredits);
+        PlayerController.OnIceBreakerChanged.AddListener(UpdateIceBreakerText);
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnScoreChanged.RemoveListener(UpdateScore);
+        PlayerController.OnCreditsChanged.RemoveListener(UpdateCredits);
+        PlayerController.OnIceBreakerChanged.RemoveListener(UpdateIceBreakerText);
+    }
+
+    private void UpdateScore()
     {
         scoreText.text = "Score: " + score.value;
     }
 
-    public void UpdateIceBreakerText(string name, int strength, Color color)
-    {
-        iceBreakerText.text = name + " (lvl. " + strength + ")";
-        iceBreakerText.color = color;
-    }
-
-    public void UpdateCredits()
+    private void UpdateCredits()
     {
         creditsText.text = "Credits: " + credits.value;
+    }
+
+    private void UpdateIceBreakerText(IceBreaker iceBreaker)
+    {
+        iceBreakerText.text = iceBreaker.name + " (lvl. " + iceBreaker.strength + ")";
+        iceBreakerText.color = iceBreaker.color;
     }
 }

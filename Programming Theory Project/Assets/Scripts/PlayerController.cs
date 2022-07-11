@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-    private MainUIManager mainUIManager;
+    public static UnityEvent OnScoreChanged = new UnityEvent();
+    public static UnityEvent OnCreditsChanged = new UnityEvent();
+    public static UnityEvent<IceBreaker> OnIceBreakerChanged = new();
 
     private Renderer playerRenderer;
     private Rigidbody playerRigidBody;
@@ -14,9 +17,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip explodeSound, switchBreakerSound;
 
     [SerializeField] private IntVariable credits, score;
+    [SerializeField] private IceBreaker fracter, codeBreaker, killer;
+
     [SerializeField] private GameObjectListVariable deactivatedCredits;
 
-    [SerializeField] private IceBreaker fracter, codeBreaker, killer;
+    [SerializeField] private BoolVariable isGameOver;
 
     private float speed = 8.0f;
     private float xRange = 7.7f;
@@ -26,12 +31,11 @@ public class PlayerController : MonoBehaviour
     private IceBreaker[] deck = new IceBreaker[3];
     private int currentIceBreaker = -1;
 
+
     private void Start()
     {
-        mainUIManager = GameObject.Find("MainUIManager").GetComponent<MainUIManager>();
-        playerRenderer = gameObject.GetComponent<Renderer>();
-        playerRigidBody = gameObject.GetComponent<Rigidbody>();
-
+        playerRenderer = GetComponent<Renderer>();
+        playerRigidBody = GetComponent<Rigidbody>();
         playerAudio = GetComponent<AudioSource>();
 
         deck[0] = fracter;
@@ -41,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameManager.Instance.gameOver)
+        if (isGameOver.value == false)
         {
             MovePlayer();
         }
@@ -52,7 +56,7 @@ public class PlayerController : MonoBehaviour
         // Switch to next icebreaker on fire button or spacebar
         if (Input.GetButtonDown("Fire1") || Input.GetKeyDown(KeyCode.Space))
         {
-            if (!GameManager.Instance.gameOver) // TODO Replace with SO boolean/event?
+            if (isGameOver.value == false) 
             {
                 SwitchIceBreaker();
             }  
@@ -82,12 +86,9 @@ public class PlayerController : MonoBehaviour
     {
         currentIceBreaker = (currentIceBreaker + 1) % 3;
 
-        IceBreaker iceBreaker = deck[currentIceBreaker];
+        playerRenderer.material.SetColor("_Color", deck[currentIceBreaker].color);
 
-        playerRenderer.material.SetColor("_Color", iceBreaker.color);
-
-        // TODO SO as channel for UI
-        mainUIManager.UpdateIceBreakerText(iceBreaker.name, iceBreaker.strength, iceBreaker.color);
+        OnIceBreakerChanged.Invoke(deck[currentIceBreaker]);
 
         playerAudio.PlayOneShot(switchBreakerSound, 1.0f);
     }
@@ -116,31 +117,21 @@ public class PlayerController : MonoBehaviour
         credit.SetActive(false);
         credits.value++;
 
-        // TODO Event for UIManager. PlayerController does nothing, UI updates when
-        // value changes
-        mainUIManager.UpdateCredits();
         playerAudio.PlayOneShot(creditSound, 1.0f);
+
+        OnCreditsChanged.Invoke();
     }
 
     private void CollideWithIce(Ice ice)
     {
         InterfaceWithIce(ice);
 
-        // TODO Have UI monitor value changes
-        mainUIManager.UpdateCredits();
-        mainUIManager.UpdateScore();
-
-        // TODO UI listens for when to update 
-
-        // Update UI with icebreaker level
-        // Nothing happens if no icebreaker is selected
-        if (currentIceBreaker < 0 || currentIceBreaker > 2)
+        OnCreditsChanged.Invoke();
+        OnScoreChanged.Invoke();
+        if (IsAnIceBreakerSelected())
         {
-            return;
+            OnIceBreakerChanged.Invoke(deck[currentIceBreaker]);
         }
-
-        IceBreaker iceBreaker = deck[currentIceBreaker];
-        mainUIManager.UpdateIceBreakerText(iceBreaker.name, iceBreaker.strength, iceBreaker.color);
     }
 
     private void CollideWithGoal(Goal goal)
@@ -156,75 +147,46 @@ public class PlayerController : MonoBehaviour
             credits.value -= goal.InterfaceCost;
             score.value += goal.PointsValue;
 
-            // TODO Remove method calls, have UI update on change
-            mainUIManager.UpdateCredits();
-            mainUIManager.UpdateScore();
+            OnCreditsChanged.Invoke();
+            OnScoreChanged.Invoke();
 
             goal.Explode();
 
-            // TODO Replace with event
-            GameManager.Instance.PlayerFinishedGame();
+            // TODO Replace with code to handle level cleared
+            isGameOver.value = true;
         }
     }
 
     private void InterfaceWithIce(Ice ice)
     {
         // Player loses the interface if no icebreaker is selected
-        // TODO Abstraction
-        if (currentIceBreaker < 0 || currentIceBreaker > 2)
+        if (!IsAnIceBreakerSelected())
         {
             IceWinsInterface(ice);
             return;
         }
 
-        switch (ice.IceType)
+        // Check if the icebreaker can defeat the ice
+        if (ice.DefeatedBy == deck[currentIceBreaker].name)
         {
-            case "Barrier":
-                if (deck[currentIceBreaker].name == "Fracter")
-                {
-                    MatchedInterface(ice);
-                }
-                else
-                {
-                    IceWinsInterface(ice);
-                    
-                }
-                break;
-
-            case "CodeGate":
-                if (deck[currentIceBreaker].name == "CodeBreaker")
-                {
-                    MatchedInterface(ice);
-                }
-                else
-                {
-                    IceWinsInterface(ice);
-                }
-                break;
-
-            case "Sentry":
-                if (deck[currentIceBreaker].name == "Killer")
-                {
-                    MatchedInterface(ice);
-                }
-                else
-                {
-                    IceWinsInterface(ice);
-                }
-                break;         
+            MatchedInterface(ice);
+        }
+        else
+        {
+            IceWinsInterface(ice);
         }
     }
 
     private void MatchedInterface(Ice ice)
     {
+        // While the player has credits, use credits to increase icebreaker strength
+        // untill the icebreaker strength matches the ice strength
         while (deck[currentIceBreaker].strength < ice.Strength && credits.value != 0)
         {
             credits.value--;
             deck[currentIceBreaker].strength++;
         }
 
-        // While-loop passed: icebreaker strength is at ice strength level
-        // and/or credits = 0. 
         // If the player has credits left over to pay the interface cost,
         // the player pays the cost and wins the interface.
         if (credits.value >= deck[currentIceBreaker].interfaceCost)
@@ -254,9 +216,21 @@ public class PlayerController : MonoBehaviour
     {
         explosionParticle.Play();
         playerAudio.PlayOneShot(explodeSound, 1.0f);
+
         playerRenderer.enabled = false;
 
-        // TODO Replace with event or SO bool
-        GameManager.Instance.GameOver();
+        foreach (Collider collider in GetComponents<Collider>())
+        {
+            collider.enabled = false;
+        }
+
+        isGameOver.value = true;
+    }
+
+    public bool IsAnIceBreakerSelected()
+    {
+        // If the current icebreaker index is outside the deck array,
+        // there is no icebreaker selected
+        return currentIceBreaker >= 0 && currentIceBreaker < deck.Length;
     }
 }

@@ -1002,10 +1002,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
+  highscores: {fileID: 11400000, guid: 1a28346d9d215400190d451e93e737f3, type: 2}
   pauseTextObject: {fileID: 1411256980}
   gameOverTextObject: {fileID: 1768253403}
-  thankYouTextObject: {fileID: 1915472458}
-  gameOver: 0
+  backgroundMusic: {fileID: 963194230}
+  isGameOver: {fileID: 11400000, guid: de637b88839104d57ac947eb5743506f, type: 2}
 --- !u!4 &498718354
 Transform:
   m_ObjectHideFlags: 0
@@ -4020,16 +4021,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionParticle: {fileID: 1566774357}
-  explodeSound: {fileID: 8300000, guid: 2a921313c927f45238a0b8baabe3ab12, type: 3}
   creditSound: {fileID: 8300000, guid: 67357478fa899460198f84822b54cc8d, type: 3}
-  switchBreakerSound: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
   notEnoughCreditsSound: {fileID: 8300000, guid: c33b0c5db5b354f099e05fa30b4605e8, type: 3}
+  explodeSound: {fileID: 8300000, guid: 2a921313c927f45238a0b8baabe3ab12, type: 3}
+  switchBreakerSound: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
   credits: {fileID: 11400000, guid: 4d28915ebe03b43fd948f1e41f6ea357, type: 2}
   score: {fileID: 11400000, guid: 92e1bee086f74443ab5ca16d1d1feb56, type: 2}
   deactivatedCredits: {fileID: 11400000, guid: ce351de9e3ec54ee387428777a2617de, type: 2}
   fracter: {fileID: 11400000, guid: 6d4bd6bc1243848e398779caae3968a9, type: 2}
   codeBreaker: {fileID: 11400000, guid: 3c54e33326d054251a1910586518e19f, type: 2}
   killer: {fileID: 11400000, guid: 1f779fd4fbf894cc6bf3c9a2cb6a99c0, type: 2}
+  isGameOver: {fileID: 11400000, guid: de637b88839104d57ac947eb5743506f, type: 2}
 --- !u!54 &1628261689
 Rigidbody:
   m_ObjectHideFlags: 0

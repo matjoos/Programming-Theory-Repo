@@ -3,34 +3,35 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-
     [SerializeField] private IntVariable score;
+    [SerializeField] private HighscoreArray highscores;
    
     [SerializeField] private GameObject pauseTextObject;
     [SerializeField] private GameObject gameOverTextObject;
-    [SerializeField] private GameObject thankYouTextObject;
+
+    [SerializeField] private AudioSource backgroundMusic;
+
+    [SerializeField] private BoolVariable isGameOver;
 
     private int pauseTimeScale = 0;
-    public bool gameOver = false;
-    private bool gameOverAnimationsDone = false;
+    private bool isGameOverAnimationDone = false;
     private float gameOverTime = 3.0f; //seconds
-
-    private void Start()
-    {
-        Instance = this;
-    }
 
     private void Update()
     {
-        if (!gameOver && Input.GetKeyDown(KeyCode.P))
+        if (isGameOver.value == false && Input.GetKeyDown(KeyCode.P))
         {
             PauseOrUnpauseGame();
         }
 
-        if (gameOverAnimationsDone && Input.anyKeyDown)
+        if (isGameOverAnimationDone && Input.anyKeyDown)
         {
-            CheckForHighscoreAndChangeScene();
+            BranchOnScore();
+        }
+
+        if (isGameOver.value == true)
+        {
+            GameOver();
         }
     }
 
@@ -43,27 +44,24 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
+        backgroundMusic.Stop();
 
-        gameOver = true;
         gameOverTextObject.SetActive(true);
 
-        Invoke("WaitForGameOverDone", gameOverTime);
+        Invoke(nameof(WaitForGameOverDone), gameOverTime);
     }
 
     private void WaitForGameOverDone()
     {
-        gameOverAnimationsDone = true;
+        isGameOverAnimationDone = true;
     }
 
-    private void CheckForHighscoreAndChangeScene()
+    private void BranchOnScore()
     {
-        // The player made the list if the score is higher
-        // than the lowest one on the list.
-        HighscoreManager.Highscore[] highscores = HighscoreManager.instance.highscores;
-
-        int lowestPosition = highscores.Length - 1;
-        int lowestHighscore = highscores[lowestPosition].score;
+        // The player made the highscore list and needs to enter a name
+        // if the score is higher than the lowest one on the list.
+        int lowestPosition = highscores.value.Length - 1;
+        int lowestHighscore = highscores.value[lowestPosition].score;
 
         if (score.value > lowestHighscore)
         {
@@ -73,11 +71,5 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadSceneAsync("highscore");
         }      
-    }
-
-    public void PlayerFinishedGame()
-    {
-        thankYouTextObject.SetActive(true);
-        GameOver();
     }
 }
